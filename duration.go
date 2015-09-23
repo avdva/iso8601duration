@@ -26,6 +26,7 @@ var (
 
 type Duration struct {
 	Years   int
+	Month   int
 	Weeks   int
 	Days    int
 	Hours   int
@@ -34,6 +35,10 @@ type Duration struct {
 }
 
 func FromString(dur string) (*Duration, error) {
+	return fromStringWithTime(dur, false)
+}
+
+func fromStringWithTime(dur string, withMonth bool) (*Duration, error) {
 	var (
 		match []string
 		re    *regexp.Regexp
@@ -65,7 +70,10 @@ func FromString(dur string) (*Duration, error) {
 		case "year":
 			d.Years = val
 		case "month":
-			return nil, ErrNoMonth
+			if !withMonth {
+				return nil, ErrNoMonth
+			}
+			d.Month = val
 		case "week":
 			d.Weeks = val
 		case "day":
@@ -118,4 +126,20 @@ func (d *Duration) ToDuration() time.Duration {
 	tot += time.Second * time.Duration(d.Seconds)
 
 	return tot
+}
+
+// Returns time.Duration based on parsed duration
+// and some base time value used to calculate actual
+// values for duration in days, months, and years
+func StringToTimeDuration(dur string, from time.Time) (time.Duration, error) {
+	internalDur, err := fromStringWithTime(dur, true)
+	if err != nil {
+		return time.Duration(0), err
+	}
+	to := from.AddDate(internalDur.Years, internalDur.Month, internalDur.Days)
+	internalDur.Years = 0
+	internalDur.Month = 0
+	internalDur.Days = 0
+	to.Add(internalDur.ToDuration())
+	return to.Sub(from), nil
 }
