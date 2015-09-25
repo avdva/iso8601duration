@@ -140,6 +140,6 @@ func StringToTimeDuration(dur string, from time.Time) (time.Duration, error) {
 	internalDur.Years = 0
 	internalDur.Month = 0
 	internalDur.Days = 0
-	to.Add(internalDur.ToDuration())
+	to = to.Add(internalDur.ToDuration())
 	return to.Sub(from), nil
 }
