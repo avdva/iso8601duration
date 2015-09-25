@@ -38,7 +38,7 @@ func FromString(dur string) (*Duration, error) {
 	return fromStringWithTime(dur, false)
 }
 
-func fromStringWithTime(dur string, withMonth bool) (*Duration, error) {
+func fromStringWithMonth(dur string, withMonth bool) (*Duration, error) {
 	var (
 		match []string
 		re    *regexp.Regexp
