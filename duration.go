@@ -35,7 +35,7 @@ type Duration struct {
 }
 
 func FromString(dur string) (*Duration, error) {
-	return fromStringWithTime(dur, false)
+	return fromStringWithMonth(dur, false)
 }
 
 func fromStringWithMonth(dur string, withMonth bool) (*Duration, error) {
@@ -132,7 +132,7 @@ func (d *Duration) ToDuration() time.Duration {
 // and some base time value used to calculate actual
 // values for duration in days, months, and years
 func StringToTimeDuration(dur string, from time.Time) (time.Duration, error) {
-	internalDur, err := fromStringWithTime(dur, true)
+	internalDur, err := fromStringWithMonth(dur, true)
 	if err != nil {
 		return time.Duration(0), err
 	}
